@@ -1,0 +1,77 @@
+variable "name" {
+  description = "Base name for the application containers"
+  type        = string
+  default     = "app"
+}
+
+variable "image" {
+  description = "Docker image for the application (Node.js / Python)"
+  type        = string
+}
+
+variable "instance_count" {
+  description = "Number of application containers to run"
+  type        = number
+  default     = 1
+}
+
+variable "internal_port" {
+  description = "Port the app listens on inside the container"
+  type        = number
+  default     = 8080
+}
+
+variable "base_external_port" {
+  description = "Base host port. Each container adds its index to this."
+  type        = number
+  default     = 8080
+}
+
+variable "network_name" {
+  description = "Name of the Docker bridge network to attach containers"
+  type        = string
+  default     = "web-net"
+}
+
+variable "env" {
+  description = "Environment variables for the app containers"
+  type        = map(string)
+  default     = {}
+}
+
+# Healthcheck settings
+variable "healthcheck_enabled" {
+  description = "Enable container healthcheck"
+  type        = bool
+  default     = true
+}
+
+variable "healthcheck_test" {
+  description = "Healthcheck test command (Docker format: e.g. [\"CMD-SHELL\", \"curl -f http://localhost:3000/health || exit 1\"])"
+  type        = list(string)
+  default     = []
+}
+
+variable "healthcheck_interval" {
+  description = "Time between health checks"
+  type        = string
+  default     = "30s"
+}
+
+variable "healthcheck_timeout" {
+  description = "Timeout for a single healthcheck"
+  type        = string
+  default     = "5s"
+}
+
+variable "healthcheck_retries" {
+  description = "Number of retries before marking container as unhealthy"
+  type        = number
+  default     = 3
+}
+
+variable "healthcheck_start_period" {
+  description = "Startup grace period before health checks start"
+  type        = string
+  default     = "10s"
+}
