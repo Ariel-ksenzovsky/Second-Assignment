@@ -15,4 +15,9 @@ resource "docker_container" "nginx" {
     internal = 80
     external = var.base_port + count.index
   }
+networks_advanced {
+  name = var.network_name
 }
+
+}
+

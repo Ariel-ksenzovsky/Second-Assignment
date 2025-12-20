@@ -1,11 +1,9 @@
-# # Custom Docker network
-# resource "docker_network" "app_net" {
-#   name = var.network_name
-# }
+
+
 
 # App image (Node.js or Python image you built)
 resource "docker_image" "app" {
-  name = "arielk2511/docker-terraform-training:3"
+  name = "arielk2511/docker-terraform-training:latest"
 }
 
 # Multiple app containers
@@ -19,7 +17,9 @@ resource "docker_container" "app" {
     external = var.base_external_port + count.index
   }
 
-  
+  networks_advanced {
+  name = var.network_name
+}
 
   # Attach to custom network
   # networks_advanced {
@@ -28,16 +28,17 @@ resource "docker_container" "app" {
 
 
 env = concat(
-    [
-  "DATABASE_HOST=mysql_db", // Connect using the database container's name
-  "DATABASE_USER=root",
-  "DATABASE_PASSWORD=mysecretpassword",
-  "DATABASE_NAME=mydb"
-    ],
-    [
-      for k, v in var.env : "${k}=${v}"
-    ]
-  )
+  [
+    "DATABASE_HOST=${lookup(var.env, "DATABASE_HOST", "mysql-db")}",
+    "DATABASE_PORT=${lookup(var.env, "DATABASE_PORT", "3306")}",
+    "DATABASE_USER=${lookup(var.env, "DATABASE_USER", "sqladminuser")}",
+    "DATABASE_PASSWORD=${lookup(var.env, "DATABASE_PASSWORD", "StrongSqlAdminPass123!")}",
+    "DATABASE_NAME=${lookup(var.env, "DATABASE_NAME", "mydb")}"
+  ],
+  [
+    for k, v in var.env : "${k}=${v}"
+  ]
+)
 
   
   # Healthcheck (only if enabled and test defined)

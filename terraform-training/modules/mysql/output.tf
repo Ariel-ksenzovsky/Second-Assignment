@@ -1,16 +1,16 @@
-# modules/mysql/outputs.tf
-
-output "container_name" {
-  description = "Name of the MySQL container"
+output "hostname" {
+  description = "Use as DATABASE_HOST from app containers"
   value       = docker_container.mysql.name
 }
 
-output "volume_name" {
-  description = "Name of the Docker volume used for MySQL data"
-  value       = docker_volume.mysql_data.name
+output "container_name" {
+  value = docker_container.mysql.name
 }
 
-output "internal_ip" {
-  description = "Internal IP address of the MySQL container on the Docker network"
-  value       = docker_container.mysql.network_data[0].ip_address
+output "volume_name" {
+  value = docker_volume.mysql_data.name
+}
+
+output "network_name" {
+  value = var.network_name
 }

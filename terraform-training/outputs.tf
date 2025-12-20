@@ -23,7 +23,3 @@ output "mysql_container_name" {
 output "mysql_volume_name" {
   value = module.mysql.volume_name
 }
-
-output "mysql_internal_ip" {
-  value = module.mysql.internal_ip
-}
