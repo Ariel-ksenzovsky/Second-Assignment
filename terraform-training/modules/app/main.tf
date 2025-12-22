@@ -8,14 +8,19 @@ resource "docker_image" "app" {
 
 # Multiple app containers
 resource "docker_container" "app" {
-  count = var.instance_count
+  count = var.enabled ? var.instance_count : 0
 
   name  = "${var.name}-${terraform.workspace}-${count.index}"
   image = docker_image.app.image_id
-  ports {
-    internal = var.internal_port
-    external = var.app_base_external_port + count.index
+  dynamic "ports" {
+  for_each = var.port_mappings
+  content {
+    internal = ports.value.internal
+    external = ports.value.external + count.index
+    protocol = ports.value.protocol
   }
+}
+
 
  dynamic "networks_advanced" {
   for_each = var.network_names
@@ -57,4 +62,13 @@ env = concat(
       start_period = var.healthcheck_start_period
     }
   }
+
+    dynamic "labels" {
+  for_each = var.labels
+  content {
+    label = labels.key
+    value = labels.value
+  }
+}
+
 }

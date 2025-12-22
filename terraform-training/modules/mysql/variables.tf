@@ -42,3 +42,14 @@ variable "replica_count" {
   type        = number
   default     = 0
 }
+
+variable "labels" {
+  description = "Docker labels to attach to containers"
+  type        = map(string)
+  default     = {}
+}
+
+variable "enabled" {
+  type    = bool
+  default = true
+}

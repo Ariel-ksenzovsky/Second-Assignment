@@ -38,6 +38,16 @@ resource "docker_container" "mysql" {
     timeout  = "5s"
     retries  = 12
   }
+
+  dynamic "labels" {
+  for_each = var.labels
+  content {
+    label = labels.key
+    value = labels.value
+  }
+}
+
+
 }
 
 # Replica volumes (LIST — count)
@@ -72,4 +82,13 @@ resource "docker_container" "mysql_replica" {
     "MYSQL_USER=${var.db_user}",
     "MYSQL_PASSWORD=${var.db_password}",
   ]
+
+  dynamic "labels" {
+  for_each = var.labels
+  content {
+    label = labels.key
+    value = labels.value
+  }
+}
+
 }

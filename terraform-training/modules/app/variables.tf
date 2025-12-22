@@ -21,11 +21,6 @@ variable "internal_port" {
   default     = 8080
 }
 
-variable "app_base_external_port" {
-  description = "Base host port. Each container adds its index to this."
-  type        = number
-}
-
 variable "network_names" {
   description = "List of Docker networks to attach this container to"
   type        = list(string)
@@ -75,3 +70,28 @@ variable "healthcheck_start_period" {
   type        = string
   default     = "10s"
 }
+
+variable "labels" {
+  description = "Docker labels to attach to containers"
+  type        = map(string)
+  default     = {}
+}
+
+variable "port_mappings" {
+  description = "List of port mappings"
+  type = list(object({
+    internal = number
+    external = number
+    protocol = optional(string, "tcp")
+  }))
+  default = []
+}
+
+variable "enabled" {
+  description = "Whether to create resources in this module"
+  type        = bool
+  default     = true
+}
+
+
+

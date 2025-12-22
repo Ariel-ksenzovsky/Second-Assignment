@@ -4,10 +4,6 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "web_base_port" {
-  description = "Base external port on the host"
-  type        = number
-}
 
 variable "network_name" {
   description = "Docker network name"
@@ -19,4 +15,32 @@ variable "image" {
   description = "Docker image to run"
   type        = string
   default     = "nginx:latest"
+}
+
+variable "labels" {
+  description = "Docker labels to attach to containers"
+  type        = map(string)
+  default     = {}
+}
+
+variable "port_mappings" {
+  description = "List of port mappings"
+  type = list(object({
+    internal = number
+    external = number
+    protocol = optional(string, "tcp")
+  }))
+  default = []
+}
+
+variable "enabled" {
+  description = "Whether to create resources in this module"
+  type        = bool
+  default     = true
+}
+
+variable "name" {
+  description = "Base name for nginx containers"
+  type        = string
+  default     = "nginx"
 }
