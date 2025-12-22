@@ -10,7 +10,7 @@ resource "docker_image" "app" {
 resource "docker_container" "app" {
   count = var.instance_count
 
-  name  = "${var.name}-${workspace.name}-${count.index}"
+  name  = "${var.name}-${terraform.workspace}-${count.index}"
   image = docker_image.app.image_id
   ports {
     internal = var.internal_port

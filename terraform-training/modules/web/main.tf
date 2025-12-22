@@ -7,7 +7,7 @@ resource "docker_image" "nginx" {
 resource "docker_container" "nginx" {
   count = var.instance_count
 
-  name  = "nginx-${workspace.name}-${count.index}"
+  name  = "nginx-${terraform.workspace}-${count.index}"
   image = docker_image.nginx.image_id
 
   # Expose unique host ports: base_port + index

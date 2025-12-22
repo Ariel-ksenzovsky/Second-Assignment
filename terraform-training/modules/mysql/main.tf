@@ -9,7 +9,7 @@ resource "docker_volume" "mysql_data" {
 
 # Primary MySQL container (SINGLE — no count)
 resource "docker_container" "mysql" {
-  name    = "var.name-${workspace.name}"
+  name    = "${var.name}-${terraform.workspace}"
   image   = docker_image.mysql.image_id
   restart = "unless-stopped"
 
