@@ -1,20 +1,24 @@
-output "hostname" {
-  description = "Use as DATABASE_HOST from app containers"
+output "container_name" {
+  description = "Primary MySQL container name"
   value       = docker_container.mysql.name
 }
 
-output "container_name" {
-  value = docker_container.mysql.name
+output "hostname" {
+  description = "Hostname to use from app containers"
+  value       = docker_container.mysql.name
 }
 
-output "volume_name" {
-  value = docker_volume.mysql_data.name
-}
-
-output "network_name" {
-  value = var.network_name
+output "primary_volume_name" {
+  description = "Primary MySQL volume name"
+  value       = docker_volume.mysql_data.name
 }
 
 output "replica_hostnames" {
-  value = [for c in docker_container.mysql_replica : c.name]
+  description = "Replica container hostnames"
+  value       = [for c in docker_container.mysql_replica : c.name]
+}
+
+output "replica_volume_names" {
+  description = "Replica volume names"
+  value       = [for v in docker_volume.mysql_replica_data : v.name]
 }

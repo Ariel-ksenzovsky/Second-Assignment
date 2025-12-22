@@ -21,17 +21,17 @@ variable "internal_port" {
   default     = 8080
 }
 
-variable "base_external_port" {
+variable "app_base_external_port" {
   description = "Base host port. Each container adds its index to this."
   type        = number
-  default     = 8080
 }
 
-variable "network_name" {
-  description = "Name of the Docker bridge network to attach containers"
-  type        = string
-  default     = "web-net"
+variable "network_names" {
+  description = "List of Docker networks to attach this container to"
+  type        = list(string)
+  default     = []
 }
+
 
 variable "env" {
   description = "Environment variables for the app containers"

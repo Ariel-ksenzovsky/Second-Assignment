@@ -4,7 +4,7 @@ variable "nginx_instance_count" {
   default     = 1
 }
 
-variable "base_port" {
+variable "webbase_port" {
   description = "The first port of the web module"
   default = 5000
 }

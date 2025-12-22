@@ -22,3 +22,27 @@ locals {
 
   cfg = lookup(local.sizes, local.env, local.sizes["dev"])
 }
+
+locals {
+      docker_network = "web-net-${terraform.workspace}"
+    }
+
+locals {
+    app_base_ports = {
+    dev     = 8080
+    staging = 9080
+    prod    = 10080
+  }
+
+  app_base_port = lookup(local.app_base_ports, terraform.workspace, 8080)
+}
+
+locals {
+    web_base_ports = {
+    dev     = 5000
+    staging = 6000
+    prod    = 7000
+  }
+
+  web_base_port = lookup(local.web_base_ports, terraform.workspace, 5000)
+}

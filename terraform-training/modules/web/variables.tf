@@ -4,10 +4,9 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "base_port" {
+variable "web_base_port" {
   description = "Base external port on the host"
   type        = number
-  default     = 5000
 }
 
 variable "network_name" {

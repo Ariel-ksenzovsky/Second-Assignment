@@ -20,6 +20,10 @@ output "mysql_container_name" {
   value = module.mysql.container_name
 }
 
-output "mysql_volume_name" {
-  value = module.mysql.volume_name
+output "mysql_primary_volume_name" {
+  value = module.mysql.primary_volume_name
+}
+
+output "mysql_replica_volume_names" {
+  value = module.mysql.replica_volume_names
 }

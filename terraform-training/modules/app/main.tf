@@ -10,16 +10,20 @@ resource "docker_image" "app" {
 resource "docker_container" "app" {
   count = var.instance_count
 
-  name  = "${var.name}-${count.index}"
+  name  = "${var.name}-${workspace.name}-${count.index}"
   image = docker_image.app.image_id
   ports {
     internal = var.internal_port
-    external = var.base_external_port + count.index
+    external = var.app_base_external_port + count.index
   }
 
-  networks_advanced {
-  name = var.network_name
+ dynamic "networks_advanced" {
+  for_each = var.network_names
+  content {
+    name = networks_advanced.value
+  }
 }
+
 
   # Attach to custom network
   # networks_advanced {

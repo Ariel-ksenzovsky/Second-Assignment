@@ -1,10 +1,13 @@
 module "python_app" {
   source       = "./modules/app"
-  network_name = docker_network.web.name
-
+  network_names =[
+    docker_network.net.name
+  ]
+  
   name           = "py-app"
   image          = "arielk2511/docker-terraform-training:3"
   instance_count = local.cfg.app_count
+  app_base_external_port = local.app_base_port
 
   env = {
     DATABASE_HOST     = module.mysql.hostname
@@ -18,23 +21,23 @@ module "python_app" {
 }
 
 
-resource "docker_network" "web" {
-  name = "web-net"
+resource "docker_network" "net" {
+  name = local.docker_network
 }
 
 # Nginx cluster module (web)
 module "nginx_cluster" {
   source = "./modules/web"
-  network_name = docker_network.web.name
+  network_name = docker_network.net.name
 
   instance_count = local.cfg.web_count
-  base_port      = var.base_port       # 8080, 8081, ... 
+  web_base_port =   local.web_base_port
 }
 
 # MySQL module
 module "mysql" {
   source       = "./modules/mysql"
-  network_name = docker_network.web.name
+  network_name = docker_network.net.name
 
   name          = "mysql-db"
   image         = "mysql:8.0"
