@@ -7,6 +7,7 @@ resource "docker_volume" "mysql_data" {
 }
 
 resource "docker_container" "mysql" {
+  count = var.replica_count
   name    = var.name
   image   = docker_image.mysql.image_id
   restart = "unless-stopped"
@@ -17,7 +18,7 @@ resource "docker_container" "mysql" {
 
   mounts {
     target = "/var/lib/mysql"
-    source = docker_volume.mysql_data.name
+    source = docker_volume.mysql_replica_data[count.index].name
     type   = "volume"
   }
 
@@ -37,4 +38,9 @@ resource "docker_container" "mysql" {
     timeout  = "5s"
     retries  = 12
   }
+}
+
+resource "docker_volume" "mysql_replica_data" {
+  count = var.replica_count
+  name  = "${var.name}-data-replica-${count.index}"
 }

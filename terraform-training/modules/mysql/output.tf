@@ -14,3 +14,7 @@ output "volume_name" {
 output "network_name" {
   value = var.network_name
 }
+
+output "replica_hostnames" {
+  value = [for c in docker_container.mysql_replica : c.name]
+}

@@ -36,3 +36,9 @@ variable "root_password" {
   description = "MySQL root password"
   sensitive   = true
 }
+
+variable "replica_count" {
+  description = "How many additional MySQL containers to run (demo replicas; not real replication)"
+  type        = number
+  default     = 0
+}

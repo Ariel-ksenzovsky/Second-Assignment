@@ -4,7 +4,7 @@ module "python_app" {
 
   name           = "py-app"
   image          = "arielk2511/docker-terraform-training:3"
-  instance_count = 1
+  instance_count = local.cfg.app_count
 
   env = {
     DATABASE_HOST     = module.mysql.hostname
@@ -27,7 +27,7 @@ module "nginx_cluster" {
   source = "./modules/web"
   network_name = docker_network.web.name
 
-  instance_count = 2          # how many nginx containers
+  instance_count = local.cfg.web_count
   base_port      = var.base_port       # 8080, 8081, ... 
 }
 
@@ -42,5 +42,7 @@ module "mysql" {
   db_user       = "sqladminuser"
   db_password   = "StrongSqlAdminPass123!"
   root_password = "StrongSqlAdminPass123!"
+
+  replica_count = local.cfg.db_replicas
 }
 
