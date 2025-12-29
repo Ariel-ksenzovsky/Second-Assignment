@@ -1,0 +1,1446 @@
+{
+  "version": 4,
+  "terraform_version": "1.10.4",
+  "serial": 21,
+  "lineage": "2a32338c-211b-6690-5f2c-2a0cc5ecf605",
+  "outputs": {
+    "mysql_container_name": {
+      "value": "prod-mysql-db-prod",
+      "type": "string"
+    },
+    "mysql_primary_volume_name": {
+      "value": "prod-mysql-db-data",
+      "type": "string"
+    },
+    "mysql_replica_volume_names": {
+      "value": [
+        "prod-mysql-db-data-replica-0",
+        "prod-mysql-db-data-replica-1"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "nginx_cluster_ips": {
+      "value": [
+        "172.18.0.7",
+        "172.18.0.6",
+        "172.18.0.5"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "nginx_ips": {
+      "value": [
+        "172.18.0.7",
+        "172.18.0.6",
+        "172.18.0.5"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "nginx_names": {
+      "value": [
+        "nginx-prod-0",
+        "nginx-prod-1",
+        "nginx-prod-2"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "nginx_ports": {
+      "value": [
+        7000,
+        7001,
+        7002
+      ],
+      "type": [
+        "tuple",
+        [
+          "number",
+          "number",
+          "number"
+        ]
+      ]
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "docker_network",
+      "name": "net",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "attachable": false,
+            "check_duplicate": null,
+            "driver": "bridge",
+            "id": "e9e7931c0403b98d32fc62063d23e4a54ee71213bc76c2e93cdf7a7845923be4",
+            "ingress": false,
+            "internal": false,
+            "ipam_config": [
+              {
+                "aux_address": {},
+                "gateway": "172.18.0.1",
+                "ip_range": "",
+                "subnet": "172.18.0.0/16"
+              }
+            ],
+            "ipam_driver": "default",
+            "ipam_options": null,
+            "ipv6": false,
+            "labels": [],
+            "name": "web-net-prod",
+            "options": {},
+            "scope": "local"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.mysql",
+      "mode": "managed",
+      "type": "docker_container",
+      "name": "mysql",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "--bind-address=0.0.0.0",
+              "--port=3306"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "docker-entrypoint.sh"
+            ],
+            "env": [
+              "MYSQL_DATABASE=mydb",
+              "MYSQL_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_ROOT_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": [
+              {
+                "interval": "10s",
+                "retries": 12,
+                "start_period": "0s",
+                "test": [
+                  "CMD-SHELL",
+                  "mysqladmin ping -h 127.0.0.1 -uroot -pStrongSqlAdminPass123! --silent"
+                ],
+                "timeout": "5s"
+              }
+            ],
+            "host": [],
+            "hostname": "0453858cf43f",
+            "id": "0453858cf43f1dc9376f116cab5f1009b10102497bb47cd80955f159781bdfc6",
+            "image": "sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "db"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [
+              {
+                "bind_options": [],
+                "read_only": null,
+                "source": "prod-mysql-db-data",
+                "target": "/var/lib/mysql",
+                "tmpfs_options": [],
+                "type": "volume",
+                "volume_options": []
+              }
+            ],
+            "must_run": true,
+            "name": "prod-mysql-db-prod",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.4",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:04",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "unless-stopped",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "healthcheck"
+              },
+              {
+                "type": "index",
+                "value": {
+                  "value": 0,
+                  "type": "number"
+                }
+              },
+              {
+                "type": "get_attr",
+                "value": "test"
+              },
+              {
+                "type": "index",
+                "value": {
+                  "value": 1,
+                  "type": "number"
+                }
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "env"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_data"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.mysql",
+      "mode": "managed",
+      "type": "docker_container",
+      "name": "mysql_replica",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "--bind-address=0.0.0.0",
+              "--port=3306"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "docker-entrypoint.sh"
+            ],
+            "env": [
+              "MYSQL_DATABASE=mydb",
+              "MYSQL_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_ROOT_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "ac9e76d063ec",
+            "id": "ac9e76d063ec97e2b80bc4b3819bfaf46dccacbe0815682e45125316c06485e6",
+            "image": "sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "db"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [
+              {
+                "bind_options": [],
+                "read_only": null,
+                "source": "prod-mysql-db-data-replica-0",
+                "target": "/var/lib/mysql",
+                "tmpfs_options": [],
+                "type": "volume",
+                "volume_options": []
+              }
+            ],
+            "must_run": true,
+            "name": "prod-mysql-db-replica-0",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.3",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:03",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "unless-stopped",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "env"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_replica_data"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "--bind-address=0.0.0.0",
+              "--port=3306"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "docker-entrypoint.sh"
+            ],
+            "env": [
+              "MYSQL_DATABASE=mydb",
+              "MYSQL_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_ROOT_PASSWORD=StrongSqlAdminPass123!",
+              "MYSQL_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "2542018318b8",
+            "id": "2542018318b8ed22650b5e512966d944440f93e4cdff8f6ef2af077a052793c1",
+            "image": "sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "db"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [
+              {
+                "bind_options": [],
+                "read_only": null,
+                "source": "prod-mysql-db-data-replica-1",
+                "target": "/var/lib/mysql",
+                "tmpfs_options": [],
+                "type": "volume",
+                "volume_options": []
+              }
+            ],
+            "must_run": true,
+            "name": "prod-mysql-db-replica-1",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.2",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:02",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "unless-stopped",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "env"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_replica_data"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.mysql",
+      "mode": "managed",
+      "type": "docker_image",
+      "name": "mysql",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "build": [],
+            "force_remove": null,
+            "id": "sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581mysql:8.0",
+            "image_id": "sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581",
+            "keep_locally": null,
+            "name": "mysql:8.0",
+            "platform": null,
+            "pull_triggers": null,
+            "repo_digest": "mysql@sha256:0275a35e79c60caae68fac520602d9f6897feb9b0941a1471196b1a01760e581",
+            "triggers": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.mysql",
+      "mode": "managed",
+      "type": "docker_volume",
+      "name": "mysql_data",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "driver": "local",
+            "driver_opts": {},
+            "id": "prod-mysql-db-data",
+            "labels": [],
+            "mountpoint": "/var/lib/docker/volumes/prod-mysql-db-data/_data",
+            "name": "prod-mysql-db-data"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.nginx_cluster",
+      "mode": "managed",
+      "type": "docker_container",
+      "name": "nginx",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "nginx",
+              "-g",
+              "daemon off;"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "/docker-entrypoint.sh"
+            ],
+            "env": [],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "11cc4543569f",
+            "id": "11cc4543569f1075b57213df5f28f5fa036155248726b0a569623c1116576026",
+            "image": "sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "web"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "nginx-prod-0",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.7",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:07",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 7000,
+                "internal": 80,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "SIGQUIT",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.nginx_cluster.docker_image.nginx"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "nginx",
+              "-g",
+              "daemon off;"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "/docker-entrypoint.sh"
+            ],
+            "env": [],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "fa5109a48911",
+            "id": "fa5109a48911a22fc3449c64d41f2377921a8bf88bef2322fd89c03d76873f52",
+            "image": "sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "web"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "nginx-prod-1",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.6",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:06",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 7001,
+                "internal": 80,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "SIGQUIT",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.nginx_cluster.docker_image.nginx"
+          ]
+        },
+        {
+          "index_key": 2,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "nginx",
+              "-g",
+              "daemon off;"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [
+              "/docker-entrypoint.sh"
+            ],
+            "env": [],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "a07323d79e90",
+            "id": "a07323d79e9020ebfa6f9b240b2c5244f4c8a2f534d03620d98b693b20d683b7",
+            "image": "sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "web"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "nginx-prod-2",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.5",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:05",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 7002,
+                "internal": 80,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "SIGQUIT",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.nginx_cluster.docker_image.nginx"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.nginx_cluster",
+      "mode": "managed",
+      "type": "docker_image",
+      "name": "nginx",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "build": [],
+            "force_remove": null,
+            "id": "sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19nginx:latest",
+            "image_id": "sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19",
+            "keep_locally": null,
+            "name": "nginx:latest",
+            "platform": null,
+            "pull_triggers": null,
+            "repo_digest": "nginx@sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19",
+            "triggers": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.python_app",
+      "mode": "managed",
+      "type": "docker_container",
+      "name": "app",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "python",
+              "app.py"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [],
+            "env": [
+              "DATABASE_HOST=prod-mysql-db-prod",
+              "DATABASE_NAME=mydb",
+              "DATABASE_PASSWORD=StrongSqlAdminPass123!",
+              "DATABASE_PORT=3306",
+              "DATABASE_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "9148bb780de7",
+            "id": "9148bb780de7517883eaea64b2bf708b4ecc9cadb2156d02b05e1139bfd1cf33",
+            "image": "sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "app"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "prod-py-app-prod-0",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.9",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:09",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 10080,
+                "internal": 8080,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/app"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_container.mysql",
+            "module.mysql.docker_container.mysql_replica",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_data",
+            "module.mysql.docker_volume.mysql_replica_data",
+            "module.python_app.docker_image.app"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "python",
+              "app.py"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [],
+            "env": [
+              "DATABASE_HOST=prod-mysql-db-prod",
+              "DATABASE_NAME=mydb",
+              "DATABASE_PASSWORD=StrongSqlAdminPass123!",
+              "DATABASE_PORT=3306",
+              "DATABASE_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "b916cec2d684",
+            "id": "b916cec2d6845ec543a9df247c0c0c4ebd9841d0ef66eed587abdcdfde3807ef",
+            "image": "sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "app"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "prod-py-app-prod-1",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.10",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:0a",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 10081,
+                "internal": 8080,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/app"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_container.mysql",
+            "module.mysql.docker_container.mysql_replica",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_data",
+            "module.mysql.docker_volume.mysql_replica_data",
+            "module.python_app.docker_image.app"
+          ]
+        },
+        {
+          "index_key": 2,
+          "schema_version": 2,
+          "attributes": {
+            "attach": false,
+            "bridge": "",
+            "capabilities": [],
+            "cgroupns_mode": null,
+            "command": [
+              "python",
+              "app.py"
+            ],
+            "container_logs": null,
+            "container_read_refresh_timeout_milliseconds": 15000,
+            "cpu_set": "",
+            "cpu_shares": 0,
+            "destroy_grace_seconds": null,
+            "devices": [],
+            "dns": null,
+            "dns_opts": null,
+            "dns_search": null,
+            "domainname": "",
+            "entrypoint": [],
+            "env": [
+              "DATABASE_HOST=prod-mysql-db-prod",
+              "DATABASE_NAME=mydb",
+              "DATABASE_PASSWORD=StrongSqlAdminPass123!",
+              "DATABASE_PORT=3306",
+              "DATABASE_USER=sqladminuser"
+            ],
+            "exit_code": null,
+            "gpus": null,
+            "group_add": null,
+            "healthcheck": null,
+            "host": [],
+            "hostname": "412636bc28f0",
+            "id": "412636bc28f0a53dd1593b57ecde235d9cc0d27546a98be4729b48d375179510",
+            "image": "sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7",
+            "init": false,
+            "ipc_mode": "private",
+            "labels": [
+              {
+                "label": "env",
+                "value": "prod"
+              },
+              {
+                "label": "tier",
+                "value": "app"
+              }
+            ],
+            "log_driver": "json-file",
+            "log_opts": null,
+            "logs": false,
+            "max_retry_count": 0,
+            "memory": 0,
+            "memory_swap": 0,
+            "mounts": [],
+            "must_run": true,
+            "name": "prod-py-app-prod-2",
+            "network_data": [
+              {
+                "gateway": "172.18.0.1",
+                "global_ipv6_address": "",
+                "global_ipv6_prefix_length": 0,
+                "ip_address": "172.18.0.8",
+                "ip_prefix_length": 16,
+                "ipv6_gateway": "",
+                "mac_address": "02:42:ac:12:00:08",
+                "network_name": "web-net-prod"
+              }
+            ],
+            "network_mode": "bridge",
+            "networks_advanced": [
+              {
+                "aliases": [],
+                "ipv4_address": "",
+                "ipv6_address": "",
+                "name": "web-net-prod"
+              }
+            ],
+            "pid_mode": "",
+            "ports": [
+              {
+                "external": 10082,
+                "internal": 8080,
+                "ip": "0.0.0.0",
+                "protocol": "tcp"
+              }
+            ],
+            "privileged": false,
+            "publish_all_ports": false,
+            "read_only": false,
+            "remove_volumes": true,
+            "restart": "no",
+            "rm": false,
+            "runtime": "runc",
+            "security_opts": [],
+            "shm_size": 64,
+            "start": true,
+            "stdin_open": false,
+            "stop_signal": "",
+            "stop_timeout": 0,
+            "storage_opts": null,
+            "sysctls": null,
+            "tmpfs": null,
+            "tty": false,
+            "ulimit": [],
+            "upload": [],
+            "user": "",
+            "userns_mode": "",
+            "volumes": [],
+            "wait": false,
+            "wait_timeout": 60,
+            "working_dir": "/app"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjIifQ==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_container.mysql",
+            "module.mysql.docker_container.mysql_replica",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_data",
+            "module.mysql.docker_volume.mysql_replica_data",
+            "module.python_app.docker_image.app"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.python_app",
+      "mode": "managed",
+      "type": "docker_image",
+      "name": "app",
+      "provider": "provider[\"registry.terraform.io/kreuzwerker/docker\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "build": [],
+            "force_remove": null,
+            "id": "sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7arielk2511/docker-terraform-training:latest",
+            "image_id": "sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7",
+            "keep_locally": null,
+            "name": "arielk2511/docker-terraform-training:latest",
+            "platform": null,
+            "pull_triggers": null,
+            "repo_digest": "arielk2511/docker-terraform-training@sha256:2ac7701d9a67f807a3294e7678aabc05a0fdcc2e7a38b0b82df2bb2d274891f7",
+            "triggers": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "docker_network.net",
+            "module.mysql.docker_container.mysql",
+            "module.mysql.docker_container.mysql_replica",
+            "module.mysql.docker_image.mysql",
+            "module.mysql.docker_volume.mysql_data",
+            "module.mysql.docker_volume.mysql_replica_data"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

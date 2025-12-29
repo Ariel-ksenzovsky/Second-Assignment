@@ -1,0 +1,1 @@
+app_image = "arielk2511/docker-terraform-training:git-1ca342e"

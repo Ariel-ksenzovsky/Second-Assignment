@@ -1,29 +1,31 @@
-output "nginx_names" {
+output "network_name" {
+  value = data.docker_network.net.name
+}
+
+output "nginx_container_names" {
   value = module.nginx_cluster.container_names
 }
 
-output "nginx_ports" {
+output "nginx_host_ports" {
   value = module.nginx_cluster.host_ports
 }
 
-output "nginx_ips" {
-  value = module.nginx_cluster.container_ips
+output "app_container_names" {
+  value = module.python_app.container_names
 }
 
-output "nginx_cluster_ips" {
-  description = "The final list/map of NGINX container IPs from the module"
-  # Change the reference to match the module call name:
-  value       = module.nginx_cluster.container_ips 
+output "app_host_ports" {
+  value = module.python_app.host_ports
 }
 
-output "mysql_container_name" {
-  value = module.mysql.container_name
+output "mysql_hostname" {
+  value = module.mysql.hostname
 }
 
-output "mysql_primary_volume_name" {
+output "mysql_primary_volume" {
   value = module.mysql.primary_volume_name
 }
 
-output "mysql_replica_volume_names" {
-  value = module.mysql.replica_volume_names
+output "mysql_replica_hostnames" {
+  value = module.mysql.replica_hostnames
 }

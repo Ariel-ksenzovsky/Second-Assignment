@@ -1,109 +1,63 @@
-# Shared network per workspace (you already do this)
-resource "docker_network" "net" {
-  name = local.docker_network
+
+data "docker_network" "net" {
+  # unique network per workspace so dev/staging/prod can run together
+  name = "web-net-${terraform.workspace}"
 }
 
-# -------------------------
-# MySQL (DB tier)
-# -------------------------
 module "mysql" {
   source       = "./modules/mysql"
-  network_name = docker_network.net.name
+  network_name = data.docker_network.net.name
 
-  # ✅ workspace-aware name (recommended so you can run multiple workspaces together)
-  name = "${terraform.workspace}-mysql-db"
+  enabled = true
 
+  name          = local.db_name
   image         = "mysql:8.0"
-  db_name       = "mydb"
-  db_user       = "sqladminuser"
-  db_password   = "StrongSqlAdminPass123!"
-  root_password = "StrongSqlAdminPass123!"
+  db_name       = var.db_name
+  db_user       = var.db_user
+  db_password   = var.db_password
+  root_password = var.root_password
 
   replica_count = local.cfg.db_replicas
 
-  # ✅ dynamic labels (module must implement dynamic "labels" block)
-  labels = {
-    env  = terraform.workspace
-    tier = "db"
-  }
-
-  # ✅ conditional creation (optional — only if you implement enabled in mysql module)
-  enabled = true
+  labels = local.db_labels
 }
 
-# -------------------------
-# Python app (APP tier)
-# -------------------------
 module "python_app" {
   source = "./modules/app"
 
-  # ✅ dynamic networks (module must implement dynamic networks_advanced block)
-  network_names = [
-    docker_network.net.name
-  ]
+  enabled = true
 
-  # ✅ workspace-aware base name
-  name           = "${terraform.workspace}-py-app"
-  image          = "arielk2511/docker-terraform-training:3"
+  network_names = [data.docker_network.net.name]
+
+  name           = local.app_name
+  image          = var.app_image
   instance_count = local.cfg.app_count
 
-  # ✅ dynamic port mappings list (module must implement dynamic "ports" block)
-  # This pattern gives each app container a unique host port:
-  # app_base_external_port + index
-  port_mappings = [
-    {
-      internal = 8080
-      external = local.app_base_port
-      protocol = "tcp"
-    }
-  ]
+  # dynamic port mappings list
+  port_mappings = local.app_port_mappings
 
-  # ✅ env stays same (but use mysql hostname output)
   env = {
     DATABASE_HOST     = module.mysql.hostname
     DATABASE_PORT     = "3306"
-    DATABASE_USER     = "sqladminuser"
-    DATABASE_PASSWORD = "StrongSqlAdminPass123!"
-    DATABASE_NAME     = "mydb"
+    DATABASE_USER     = var.db_user
+    DATABASE_PASSWORD = var.db_password
+    DATABASE_NAME     = var.db_name
   }
 
-  # ✅ dynamic labels
-  labels = {
-    env  = terraform.workspace
-    tier = "app"
-  }
-
-  # ✅ conditional creation
-  enabled = true
+  labels = local.app_labels
 
   depends_on = [module.mysql]
 }
 
-# -------------------------
-# Nginx (WEB tier)
-# -------------------------
 module "nginx_cluster" {
   source       = "./modules/web"
-  network_name = docker_network.net.name
+  network_name = data.docker_network.net.name
 
-  name           = "${terraform.workspace}-nginx"
-  instance_count = local.cfg.web_count
-
-  # ✅ dynamic port mappings list for web
-  port_mappings = [
-    {
-      internal = 80
-      external = local.web_base_port
-      protocol = "tcp"
-    }
-  ]
-
-  # ✅ dynamic labels
-  labels = {
-    env  = terraform.workspace
-    tier = "web"
-  }
-
-  # ✅ conditional creation (example: disable nginx in dev if you want)
   enabled = true
+
+  name           = local.web_name
+  image          = var.nginx_image
+  instance_count = local.cfg.web_count
+  labels         = local.web_labels
+  port_mappings = local.web_port_mappings
 }

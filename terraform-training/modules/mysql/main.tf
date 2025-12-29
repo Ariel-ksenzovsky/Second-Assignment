@@ -2,14 +2,16 @@ resource "docker_image" "mysql" {
   name = var.image
 }
 
-# Primary volume (SINGLE — no count)
+# Primary volume (single)
 resource "docker_volume" "mysql_data" {
-  name = "${var.name}-data"
+  count = var.enabled ? 1 : 0
+  name  = "${var.name}-data"
 }
 
-# Primary MySQL container (SINGLE — no count)
+# Primary MySQL container (single)
 resource "docker_container" "mysql" {
-  name    = "${var.name}-${terraform.workspace}"
+  count   = var.enabled ? 1 : 0
+  name    = var.name
   image   = docker_image.mysql.image_id
   restart = "unless-stopped"
 
@@ -19,7 +21,7 @@ resource "docker_container" "mysql" {
 
   mounts {
     target = "/var/lib/mysql"
-    source = docker_volume.mysql_data.name
+    source = docker_volume.mysql_data[0].name
     type   = "volume"
   }
 
@@ -40,25 +42,23 @@ resource "docker_container" "mysql" {
   }
 
   dynamic "labels" {
-  for_each = var.labels
-  content {
-    label = labels.key
-    value = labels.value
+    for_each = var.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
 }
 
-
-}
-
-# Replica volumes (LIST — count)
+# Replica volumes (list)
 resource "docker_volume" "mysql_replica_data" {
-  count = var.replica_count
+  count = var.enabled ? var.replica_count : 0
   name  = "${var.name}-data-replica-${count.index}"
 }
 
-# Replica containers (LIST — count)
+# Replica containers (list)
 resource "docker_container" "mysql_replica" {
-  count   = var.replica_count
+  count   = var.enabled ? var.replica_count : 0
   name    = "${var.name}-replica-${count.index}"
   image   = docker_image.mysql.image_id
   restart = "unless-stopped"
@@ -75,7 +75,6 @@ resource "docker_container" "mysql_replica" {
 
   command = ["--bind-address=0.0.0.0", "--port=3306"]
 
-  # NOTE: extra containers only (not real replication)
   env = [
     "MYSQL_ROOT_PASSWORD=${var.root_password}",
     "MYSQL_DATABASE=${var.db_name}",
@@ -84,11 +83,10 @@ resource "docker_container" "mysql_replica" {
   ]
 
   dynamic "labels" {
-  for_each = var.labels
-  content {
-    label = labels.key
-    value = labels.value
+    for_each = var.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
-}
-
 }
