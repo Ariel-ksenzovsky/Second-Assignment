@@ -1,31 +1,62 @@
-output "network_name" {
-  value = data.docker_network.net.name
+# --- Chain module outputs through root ---
+
+output "nginx_basic" {
+  description = "NGINX tier outputs"
+  value = {
+    names = module.nginx_cluster.container_names
+    ports = module.nginx_cluster.host_ports
+    ips   = module.nginx_cluster.container_ips
+  }
 }
 
-output "nginx_container_names" {
-  value = module.nginx_cluster.container_names
+output "app_basic" {
+  description = "App tier outputs"
+  value = {
+    names = module.python_app.container_names
+    ports = module.python_app.host_ports
+    ips   = module.python_app.container_ips
+  }
 }
 
-output "nginx_host_ports" {
-  value = module.nginx_cluster.host_ports
+output "mysql_basic" {
+  description = "MySQL tier outputs"
+  value = {
+    hostname            = module.mysql.hostname
+    primary_volume_name = module.mysql.primary_volume_name
+    replica_hostnames   = module.mysql.replica_hostnames
+  }
 }
 
-output "app_container_names" {
-  value = module.python_app.container_names
+output "automation_json" {
+  description = "Single JSON payload for automation/scripts"
+  value = jsonencode({
+    workspace = terraform.workspace
+
+    web = {
+      names = module.nginx_cluster.container_names
+      ports = module.nginx_cluster.host_ports
+      ips   = module.nginx_cluster.container_ips
+    }
+
+    app = {
+      names = module.python_app.container_names
+      ports = module.python_app.host_ports
+      ips   = module.python_app.container_ips
+    }
+
+    db = {
+      hostname          = module.mysql.hostname
+      replica_hostnames = module.mysql.replica_hostnames
+    }
+  })
 }
 
-output "app_host_ports" {
-  value = module.python_app.host_ports
-}
 
-output "mysql_hostname" {
-  value = module.mysql.hostname
-}
-
-output "mysql_primary_volume" {
-  value = module.mysql.primary_volume_name
-}
-
-output "mysql_replica_hostnames" {
-  value = module.mysql.replica_hostnames
+output "db_credentials" {
+  description = "Database credentials (sensitive)"
+  value = {
+    user     = module.mysql.db_user
+    password = module.mysql.db_password
+  }
+  sensitive = true
 }

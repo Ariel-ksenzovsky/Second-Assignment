@@ -5,7 +5,7 @@ data "docker_network" "net" {
 }
 
 module "mysql" {
-  source       = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-mysql?ref=v1.0.0"
+  source       = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-mysql?ref=v1.0.1"
   network_name = data.docker_network.net.name
 
   enabled = true
@@ -23,7 +23,7 @@ module "mysql" {
 }
 
 module "python_app" {
-  source = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-app?ref=v1.0.0"
+  source = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-app?ref=v1.0.1"
 
   enabled = true
 
@@ -50,7 +50,7 @@ module "python_app" {
 }
 
 module "nginx_cluster" {
-  source       = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-web?ref=v1.0.0"
+  source       = "git::https://github.com/Ariel-ksenzovsky/terraform-docker-modules.git//docker-web?ref=v1.0.1"
   network_name = data.docker_network.net.name
 
   enabled = true
